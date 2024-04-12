@@ -1,18 +1,16 @@
 
 const { google } = require("googleapis");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { Queue, Worker } = require("bullmq"); // Import Queue and Worker from bullmq
+const { Queue } = require("bullmq"); // Import Queue and Worker from bullmq
 const { Redis } = require("ioredis");
 const axios = require("axios");
 
 
-
-
 const connection = new Redis({
   port: 18809,
-  host: "redis-18809.c261.us-east-1-4.ec2.cloud.redislabs.com",
+  host: process.env.HOST_R,
   username: "default",
-  password: "doWfwCCikPDhFWW5C5xBwrozn1qUSEoT",
+  password: process.env.PASS_R,
   maxRetriesPerRequest: null,
 });
 
