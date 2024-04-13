@@ -1,7 +1,7 @@
 
 
 const passport = require("../middleware/passport");
-const {gmailHandler, googleCallback} = require("../controller/gmailController");
+const {gmailHandler} = require("../controller/gmailController");
 const express = require("express");
 const googlerouter = express.Router();
 
@@ -24,7 +24,6 @@ googlerouter.get(
   passport.authenticate("google"),
   (req, res) => {
     try {
-      googleCallback(req, res);
       res.redirect("/auth/gmail");
     } catch (error) {
       console.error("Error in googleCallback:", error);

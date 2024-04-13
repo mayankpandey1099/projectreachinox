@@ -1,13 +1,12 @@
 
 const { google } = require("googleapis");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { Queue } = require("bullmq"); // Import Queue and Worker from bullmq
+const { Queue, Worker } = require("bullmq"); // Import Queue and Worker from bullmq
 const { Redis } = require("ioredis");
-const axios = require("axios");
 
 
 const connection = new Redis({
-  port: 18809,
+  port: process.env.PORT_R,
   host: process.env.HOST_R,
   username: "default",
   password: process.env.PASS_R,
@@ -39,6 +38,20 @@ const gmailHandler = async (req, res) => {
     auth: oauth2Client,
   });
 
+  const worker = new Worker(
+    "gmail-auto-reply-queue",
+    async (job) => {
+      const { message } = job.data;
+      const messageDetails = await gmail.users.messages.get({
+        userId: "me",
+        id: message.id,
+        format: "full",
+      });
+      await sendAutoReply(gmail, messageDetails.data);
+    },
+    { connection: connection }
+  );
+
   try {
     const response = await gmail.users.messages.list({
       userId: "me",
@@ -52,14 +65,8 @@ const gmailHandler = async (req, res) => {
     }
 
     for (const message of messages) {
-      const messageDetails = await gmail.users.messages.get({
-        userId: "me",
-        id: message.id,
-        format: "full",
-      });
-      await sendAutoReply(gmail, messageDetails.data);
+      await queue.add("send-auto-reply", { message });
     }
-
     res.status(200).send("Auto reply enabled successfully!");
   } catch (error) {
     console.error("Error generating or sending reply message:", error);
@@ -100,6 +107,7 @@ const categorizeEmail = async (email) => {
 
 
 const sendAutoReply = async (gmail, messageDetails) => {
+  try{
   const messageId = messageDetails.id;
   const emailSubject = messageDetails.payload.headers.find(
     (header) => header.name === "Subject"
@@ -127,7 +135,6 @@ const sendAutoReply = async (gmail, messageDetails) => {
       .value
   );
 
-  // console.log(`printing name to : ${typeof (messageDetails.payload.headers.find((header) => header.name === "To").value)}  printing name from : ${messageDetails.payload.headers.find((header) => header.name === "From").value}`)
   switch (category) {
     case "Interested":
       request = `Read ${emailBody} and write an email on behalf of ${toName}, Reachinbox asking ${fromName} if they are willing to hop on to a demo call by suggesting a time from Mayank Pandey`;
@@ -169,109 +176,10 @@ const sendAutoReply = async (gmail, messageDetails) => {
   });
 
   console.log("Reply sent successfully to email with id:", messageId);
-};
-
-
-const googleCallback = async (req, res) => {
-  const { code } = req.query;
-  if (!code) {
-    return res.status(400).send("Authorization code missing.");
-  }
-  try {
-    oAuth2Client.getToken(code, async function (err, tokens) {
-      if (err) {
-        console.error("Error getting oAuth tokens:", err);
-      }
-      oAuth2Client.setCredentials(tokens);
-
-      const data = await getListOfMails(tokens);
-      const messages = data.messages;
-      const currentLabels = await axios.get(
-        "https://gmail.googleapis.com/gmail/v1/users/me/labels",
-        {
-          headers: {
-            Authorization: `Bearer ${tokens.access_token}`,
-          },
-        }
-      );
-
-      const existingLabelNames = currentLabels.data.labels.map(
-        (label) => label.name
-      );
-      const labelsToCreate = [
-        "Interested",
-        "Not Interested",
-        "More Information",
-      ].filter((label) => !existingLabelNames.includes(label));
-
-      const createLabelPromises = labelsToCreate.map(async (label) => {
-        await limiter.schedule(async () => {
-          return axios.post(
-            `https://gmail.googleapis.com/gmail/v1/users/me/labels`,
-            {
-              name: label,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${tokens.access_token}`,
-              },
-            }
-          );
-        });
-      });
-
-      Promise.all(createLabelPromises)
-        .then((responses) => {
-          console.log("Labels created successfully:", responses);
-        })
-        .catch((error) => {
-          console.error("Error creating labels:", error);
-        });
-
-      messages.forEach(async (message) => {
-        await limiter.schedule(async () => {
-          const id = message.id;
-          const mail = await getMail(id, tokens);
-          const parsedMail = parseMail(mail);
-          console.log(parsedMail);
-          const label = await labelMail(tokens, id, parsedMail);
-          console.log(label);
-          let request = "";
-          switch (label) {
-            case "Interested":
-              request = `Read ${parsedMail.emailContext} and write an email on behalf of Mayank Pandey,Reachinbox asking ${parsedMail.from.name}  if they are willing to hop on to a demo call by suggesting a time from Mayank Pandey`;
-              break;
-            case "Not Interested":
-              request = `Read ${parsedMail.emailContext} and write an email on behalf of Mayank Pandey, Reachinbox thanking ${parsedMail.from.name} for their time and asking them if they would like to be contacted in the future from Mayank Pandey`;
-              break;
-            case "More information":
-              request = `Read ${parsedMail.emailContext} and write an email on behalf of Mayank Pandey, Reachinbox asking ${parsedMail.from.name} if they would like more information about the product from Mayank Pandey`;
-              break;
-            default:
-              request = `Read ${parsedMail.emailContext} and write an email on behalf of Mayank Pandey, Reachinbox asking ${parsedMail.from.name} if they are willing to hop on to a demo call by suggesting a time Mayank`;
-          }
-
-          setTimeout(async () => {
-            const body = await writeMail(request);
-            const details = {
-              to: parsedMail.from.email,
-              cc: parsedMail.cc,
-              subject: parsedMail.subject,
-              body: body,
-            };
-            init(details);
-          }, 2000);
-        });
-      });
-      res.send(
-        `You have successfully authenticated with Google and Sent Replies to your Email. You can now close this tab.`
-      );
-    });
-  } catch (error) {
-    console.log(error);
+} catch (error) {
+    console.error("Error generating or sending reply message:", error);
+    return "Error generating or sending reply message: " + error.message;
   }
 };
 
-
-
-module.exports = {gmailHandler, googleCallback};
+module.exports = {gmailHandler};
