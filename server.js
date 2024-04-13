@@ -3,7 +3,7 @@ require("dotenv").config();
 const session = require("express-session");
 const cors = require("cors");
 const { sequelize } = require("./db");
-const { googlerouter } = require("./routes/google");
+const { googlerouter } = require("./routes/googleRouter");
 const passport = require("./middleware/passport");
 
 const app = express();
