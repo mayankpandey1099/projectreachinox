@@ -1,12 +1,12 @@
 const { sequelize } = require("../utils/db");
 const { DataTypes } = require("sequelize");
 
-const User = sequelize.define("GoogleUser", {
-  googleId: {
+const outlookUser = sequelize.define("OutlookUser", {
+  OutlookId: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  displayName: {
+  name: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -15,13 +15,13 @@ const User = sequelize.define("GoogleUser", {
     allowNull: true,
   },
   accessToken: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   refreshToken: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
 });
 
-module.exports = { User };
+module.exports = { outlookUser };

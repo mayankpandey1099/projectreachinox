@@ -3,9 +3,9 @@
 const passport = require("../middleware/passport");
 const {gmailHandler} = require("../controller/gmailController");
 const express = require("express");
-const googlerouter = express.Router();
+const googleRouter = express.Router();
 
-googlerouter.get(
+googleRouter.get(
   "/google",
   passport.authenticate("google", {
     scope: [
@@ -19,7 +19,7 @@ googlerouter.get(
   })
 );
 
-googlerouter.get(
+googleRouter.get(
   "/google/callback",
   passport.authenticate("google"),
   (req, res) => {
@@ -32,6 +32,6 @@ googlerouter.get(
   }
 );
 
-googlerouter.get("/gmail", gmailHandler);
+googleRouter.get("/gmail", gmailHandler);
 
-module.exports = { googlerouter };
+module.exports = { googleRouter };

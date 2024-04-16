@@ -2,8 +2,9 @@ const express = require("express");
 require("dotenv").config();
 const session = require("express-session");
 const cors = require("cors");
-const { sequelize } = require("./db");
-const { googlerouter } = require("./routes/googleRouter");
+const { sequelize } = require("./utils/db");
+const { googleRouter } = require("./routes/googleRouter");
+const { outlookRouter } = require("./routes/outlookRouter");
 const passport = require("./middleware/passport");
 
 const app = express();
@@ -27,7 +28,8 @@ app.get("/", (req, res) => {
 });
  
 
-app.use("/auth", googlerouter);
+app.use("/auth", googleRouter);
+app.use("/auth", outlookRouter)
 
 const port = 3000;
 
