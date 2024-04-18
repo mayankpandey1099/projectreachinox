@@ -33,7 +33,6 @@ passport.use(
           refreshToken: refreshToken,
           accessToken: accessToken,
         });
-        console.log(user);
       } catch (err) {
         throw err;
       }
@@ -49,27 +48,32 @@ passport.use(
       callbackURL: "http://localhost:3000/auth/outlook/callback",
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log("Outlook Profile:", profile);
+      profile.tokens = { accessToken, refreshToken };
+      console.log("Outlook Profile in passport.js:", profile);
+      console.log("this is done in passport.js", done);
       // Create or update user in your database
-      const user = {
-        outlookId: profile.id,
-        name: profile.DisplayName,
-        email: profile.EmailAddress,
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      };
-      console.log(user);
-      if (refreshToken) user.refreshToken = refreshToken;
-      if (profile.MailboxGuid) user.mailboxGuid = profile.MailboxGuid;
-      if (profile.Alias) user.alias = profile.Alias;
-
-      outlookUser.create(user, (err, user) => {
-        if (err) return done(err);
-        return done(null, user);
-      });
+      try {
+        const user = outlookUser.create({
+          OutlookId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        });
+      } catch (err) {
+        throw err;
+      }
+      return done(null, profile);
     }
   )
 );
+    
+
+      // if (refreshToken) user.refreshToken = refreshToken;
+      // if (profile.MailboxGuid) user.mailboxGuid = profile.MailboxGuid;
+      // if (profile.Alias) user.alias = profile.Alias;
+
+
 
 
 
