@@ -49,8 +49,8 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       profile.tokens = { accessToken, refreshToken };
-      console.log("Outlook Profile in passport.js:", profile);
-      console.log("this is done in passport.js", done);
+      //console.log("Outlook Profile in passport.js:", profile);
+      //console.log("this is done in passport.js", done);
       // Create or update user in your database
       try {
         const user = outlookUser.create({

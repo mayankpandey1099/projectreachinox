@@ -29,7 +29,8 @@ app.get("/", (req, res) => {
  
 
 app.use("/auth", googleRouter);
-app.use("/auth", outlookRouter)
+app.use("/auth", outlookRouter);
+
 
 const port = 3000;
 
