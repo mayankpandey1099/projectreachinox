@@ -39,20 +39,19 @@ npm install
 
 ### Create a .env file in the root directory and add the following variables:
 
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-API_KEY=your_google_ai_api_key
-CLIENT_ID=your_outlook_client_id
-CLIENT_SECRET=your_outlook_client_secret
-TENANT_ID=your_outlook_tenant_id
+- GOOGLE_CLIENT_ID=your_google_client_id
+- GOOGLE_CLIENT_SECRET=your_google_client_secret
+- API_KEY=your_google_ai_api_key
+- CLIENT_ID=your_outlook_client_id
+- CLIENT_SECRET=your_outlook_client_secret
+- TENANT_ID=your_outlook_tenant_id
 
-DB_NAME=your_db_name
-DB_HOST=your_db_host
-DB_PASS=your_db_pass
+- DB_NAME=your_db_name
+- DB_HOST=your_db_host
+- DB_PASS=your_db_pass
 
-HOST_R=your_redis_host
-PASS_R=your_redis_pass
-
+- HOST_R=your_redis_host
+- PASS_R=your_redis_pass
 
 
 
