@@ -38,6 +38,7 @@ cd projectreachinox
 npm install
 
 ### Create a .env file in the root directory and add the following variables:
+
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 API_KEY=your_google_ai_api_key
@@ -51,6 +52,7 @@ DB_PASS=your_db_pass
 
 HOST_R=your_redis_host
 PASS_R=your_redis_pass
+
 
 
 
