@@ -88,13 +88,7 @@ const sendAutoReply = async (serviceProvider, messageDetails, serviceName) => {
           raw: rawMessage,
         },
       });
-    } else if (serviceName === "outlook") {
-      // Send auto-reply using Outlook API
-      await serviceProvider.api("/me/sendMail").post({
-        raw: rawMessage, // Use the prepared raw message directly
-      });
     }
-
     console.log("Reply sent successfully to email with id:", messageId);
   } catch (error) {
     console.error("Error generating or sending reply message:", error);

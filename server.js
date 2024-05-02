@@ -21,15 +21,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
-  res.send(
-    '<a href="/auth/google">Sign in with Google</a>'
-  );
-});
  
-
 app.use("/auth", googleRouter);
-app.use("/auth", outlookRouter);
+app.use("/", outlookRouter);
 
 
 const port = 3000;

@@ -3,7 +3,7 @@
 const { google } = require("googleapis");
 const { Queue, Worker } = require("bullmq"); 
 const connection = require("../utils/redisConfig");
-const {sendAutoReply} = require("../utils/emailUtils");
+const {sendAutoReply} = require("../utils/gmailReply");
 
 
 // Create a queue for processing Gmail auto-reply jobs
