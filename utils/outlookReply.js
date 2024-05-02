@@ -20,6 +20,7 @@ const generateAutoReply = async (userAccessToken, message, sendAutoMail) => {
       body: emailBody,
       bodyPreview: bodyPreview,
     });
+    console.log(category);
     let request = "";
 
     // sending auto-reply request based on email category
