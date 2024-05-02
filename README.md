@@ -1,22 +1,32 @@
-<h1><strong>Project Reachinox</strong></h1>
+# Project Reachinox
 
-Project Reachinox is a web application that integrates with Gmail to automatically categorize and respond to emails using AI-powered auto-replies.
+Project Reachinox is a web application that integrates with Gmail and Outlook to automatically categorize and respond to emails using AI-powered auto-replies.
 
-<h2><strong>Features</strong></h2>
+## Features
 
-<h3><strong>Gmail Integration</strong></h3>: Seamlessly connects to your Gmail account using OAuth 2.0 authentication.
+### Gmail Integration
+Seamlessly connects to your Gmail account using OAuth 2.0 authentication.
 
-**Automatic Categorization**: Utilizes Google's Generative AI to categorize incoming emails into predefined categories: Interested, Not Interested, More Information.
+### Outlook Integration
+Integrates with Microsoft Graph API and MSAL for Outlook email handling and authentication.
 
-**AI Auto-Replies**: Generates personalized auto-reply emails based on the categorized emails.
+### Automatic Categorization
+Utilizes Google's Generative AI to categorize incoming emails into predefined categories: Interested, Not Interested, More Information.
 
-**Express.js Backend**: Utilizes Express.js to handle server-side routing and logic.
+### AI Auto-Replies
+Generates personalized auto-reply emails based on the categorized emails.
 
-**Passport.js Middleware**: Integrates Passport.js for authentication using Google OAuth 2.0 strategy.
+### Express.js Backend
+Utilizes Express.js to handle server-side routing and logic.
 
-**BullMQ Job Queue**: Implements BullMQ for job queuing to handle asynchronous tasks efficiently.
+### Passport.js Middleware
+Integrates Passport.js for authentication using Google OAuth 2.0 and MSAL for Outlook authentication.
 
-**Redis Integration**: Utilizes Redis as a message broker for job queue communication.
+### BullMQ Job Queue
+Implements BullMQ for job queuing to handle asynchronous tasks efficiently.
+
+### Redis Integration
+Utilizes Redis as a message broker for job queue communication.
 
 ## Installation
 
@@ -31,11 +41,16 @@ npm install
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 API_KEY=your_google_ai_api_key
+CLIENT_ID=your_outlook_client_id
+CLIENT_SECRET=your_outlook_client_secret
+TENANT_ID=your_outlook_tenant_id
 
-DB_NAME = your_db_name
-DB_HOST = your_db_host
-DB_PASS = your_db_pass
+DB_NAME=your_db_name
+DB_HOST=your_db_host
+DB_PASS=your_db_pass
 
-HOST_R = your_redis_host
-PASS_R = your_redis_pass
+HOST_R=your_redis_host
+PASS_R=your_redis_pass
+
+
 
